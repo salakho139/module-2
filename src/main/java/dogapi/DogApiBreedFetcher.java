@@ -20,14 +20,14 @@ public class DogApiBreedFetcher implements BreedFetcher {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
-                throw new BreedNotFoundException("Failed to fetch breed info for: " + breed);
+                throw new BreedNotFoundException(breed);
             }
 
             String jsonBody = response.body().string();
             JSONObject json = new JSONObject(jsonBody);
 
             if (json.getString("status").equals("error")) {
-                throw new BreedNotFoundException("Breed not found: " + breed);
+                throw new BreedNotFoundException(breed);
             }
 
             JSONArray subBreeds = json.getJSONArray("message");
@@ -38,9 +38,9 @@ public class DogApiBreedFetcher implements BreedFetcher {
             return result;
 
         } catch (IOException e) {
-            throw new BreedNotFoundException("Network error while fetching breed: " + breed);
+            throw new BreedNotFoundException(breed);
         } catch (Exception e) {
-            throw new BreedNotFoundException("Unexpected error for breed: " + breed);
+            throw new BreedNotFoundException(breed);
         }
     }
 }
